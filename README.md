@@ -30,6 +30,27 @@ k8s-for-poor-people is a Terraform module that provisions a minimal yet producti
 
 ---
 
+## Architecture Overview
+
+The following diagram illustrates the flow of a typical external request from DNS resolution to application response in a cluster provisioned by this module:
+
+```mermaid
+sequenceDiagram
+  participant User as "User"
+  participant CF as "Cloudflare DNS"
+  participant LB as "Hetzner Load Balancer"
+  participant Traefik as "Traefik Ingress (K8s)"
+  participant App as "Kubernetes Application"
+
+  User->>CF: DNS Query (app.example.com)
+  CF-->>User: IP of Hetzner LB
+  User->>LB: HTTP/HTTPS Request
+  LB->>Traefik: Forward traffic to cluster
+  Traefik->>App: Route to service/pod
+  App-->>User: Application Response
+```
+
+
 ## Prerequisites
 
 ### Software Requirements

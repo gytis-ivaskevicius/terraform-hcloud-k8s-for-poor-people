@@ -154,7 +154,7 @@ variable "registries" {
   description = <<EOF
     List of registry mirrors to use.
     Example:
-    ```
+    ```hcl
     registries = {
       mirrors = {
         "docker.io" = {
@@ -164,9 +164,17 @@ variable "registries" {
           ]
         }
       }
+      config = {
+        "docker.io" = {
+          auth = {
+            username = "myuser"
+            password = "mypassword"
+          }
+        }
+      }
     }
     ```
-    https://www.talos.dev/v1.6/reference/configuration/v1alpha1/config/#Config.machine.registries
+    See: https://www.talos.dev/v1.6/reference/configuration/v1alpha1/config/#Config.machine.registries
   EOF
 }
 
