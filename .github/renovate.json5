@@ -6,7 +6,7 @@
     ":automergePatch",
   ],
   "assignees": [
-    "mrclrchtr"
+    "gytis-ivaskevicius"
   ],
   "prHourlyLimit": 0,
   "rangeStrategy": "bump",
