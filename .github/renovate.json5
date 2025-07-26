@@ -1,79 +1,16 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    'config:recommended',
-    'schedule:earlyMondays',
+    ":dependencyDashboard",
+    ":semanticPrefixFixDepsChoreOthers",
+    ":ignoreModulesAndTests",
+    "group:allNonMajor",
+    "mergeConfidence:age-confidence-badges",
+    "replacements:all",
+    "workarounds:all",
     ':automergePatch',
   ],
   assignees: [
     'gytis-ivaskevicius',
-  ],
-  prHourlyLimit: 0,
-  rangeStrategy: 'bump',
-  packageRules: [
-    {
-      matchManagers: [
-        'terraform',
-      ],
-      semanticCommitType: 'fix',
-    },
-    {
-      matchPackageNames: [
-        'hashicorp/terraform',
-      ],
-      rangeStrategy: 'widen',
-    },
-    {
-      matchPackageNames: [
-        'bridgecrewio/checkov-action',
-      ],
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-        'pin',
-        'digest',
-      ],
-      automerge: true,
-    },
-  ],
-  customManagers: [
-    {
-      description: 'Update semantic-release in GitHub Action workflows',
-      customType: 'regex',
-      managerFilePatterns: [
-        '/^\\.github\\/(actions|workflows)\\/.+\\.ya?ml$/',
-      ],
-      matchStrings: [
-        'semantic_version\\s*:\\s*("|\')?(?<currentValue>.+)("|\'|(\\s+)|\\n|$)',
-      ],
-      datasourceTemplate: 'npm',
-      depNameTemplate: 'semantic-release',
-    },
-    {
-      description: 'Update conventional-changelog-conventionalcommits in GitHub Action workflows',
-      customType: 'regex',
-      managerFilePatterns: [
-        '/^\\.github\\/(actions|workflows)\\/.+\\.ya?ml$/',
-      ],
-      matchStrings: [
-        '.*(?<depName>conventional-changelog-conventionalcommits)@(?<currentValue>.+?)("|\'|(\\s+)|\\n|$)',
-      ],
-      datasourceTemplate: 'npm',
-      depNameTemplate: 'conventional-changelog-conventionalcommits',
-    },
-    {
-      description: 'Update packer dependencies.',
-      customType: 'regex',
-      managerFilePatterns: [
-        '/\\.pkr\\.hcl/',
-      ],
-      matchStrings: [
-        'required_version[\\s]+=[\\s]+"=?(?<currentValue>\\S*)"',
-        'source[\\s]+=[\\s]+"github.com/(?<depName>\\S*)"[\\s]+version[\\s]+=[\\s]+"(?<currentValue>\\S*)"',
-        'version[\\s]+=[\\s]+"(?<currentValue>\\S*)"[\\s]+source[\\s]+=[\\s]+"github.com/(?<depName>\\S*)"',
-      ],
-      datasourceTemplate: 'github-tags',
-      depNameTemplate: '{{#if depName}}{{#if (containsString depName "hetznercloud/")}}{{{replace "hetznercloud/" "hetznercloud/packer-plugin-" depName}}}{{else}}{{{depName}}}{{/if}}{{else}}hashicorp/packer{{/if}}',
-    },
   ],
 }
