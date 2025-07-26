@@ -1,66 +1,71 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "schedule:earlyMondays",
-    ":automergePatch",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'schedule:earlyMondays',
+    ':automergePatch',
   ],
-  "assignees": [
-    "gytis-ivaskevicius"
+  assignees: [
+    'gytis-ivaskevicius',
   ],
-  "prHourlyLimit": 0,
-  "rangeStrategy": "bump",
-  "packageRules": [
+  prHourlyLimit: 0,
+  rangeStrategy: 'bump',
+  packageRules: [
     {
-      "matchManagers": [
-        "terraform"
+      matchManagers: [
+        'terraform',
       ],
-      "semanticCommitType": "fix",
+      semanticCommitType: 'fix',
     },
     {
-      "matchPackageNames": [
-        "hashicorp/terraform"
+      matchPackageNames: [
+        'hashicorp/terraform',
       ],
-      "rangeStrategy": "widen"
+      rangeStrategy: 'widen',
     },
     {
-      "matchPackageNames": [
-        "bridgecrewio/checkov-action"
+      matchPackageNames: [
+        'bridgecrewio/checkov-action',
       ],
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
-    }
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+        'pin',
+        'digest',
+      ],
+      automerge: true,
+    },
   ],
   customManagers: [
     {
-      description: "Update semantic-release in GitHub Action workflows",
-      customType: "regex",
-      fileMatch: [
-        "^\\.github\\/(actions|workflows)\\/.+\\.ya?ml$"
+      description: 'Update semantic-release in GitHub Action workflows',
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/(actions|workflows)\\/.+\\.ya?ml$/',
       ],
       matchStrings: [
-        "semantic_version\\s*:\\s*(\"|')?(?<currentValue>.+)(\"|'|(\\s+)|\\n|$)",
+        'semantic_version\\s*:\\s*("|\')?(?<currentValue>.+)("|\'|(\\s+)|\\n|$)',
       ],
-      datasourceTemplate: "npm",
-      depNameTemplate: "semantic-release",
+      datasourceTemplate: 'npm',
+      depNameTemplate: 'semantic-release',
     },
     {
-      description: "Update conventional-changelog-conventionalcommits in GitHub Action workflows",
-      customType: "regex",
-      fileMatch: [
-        "^\\.github\\/(actions|workflows)\\/.+\\.ya?ml$"
+      description: 'Update conventional-changelog-conventionalcommits in GitHub Action workflows',
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/(actions|workflows)\\/.+\\.ya?ml$/',
       ],
       matchStrings: [
-        ".*(?<depName>conventional-changelog-conventionalcommits)@(?<currentValue>.+?)(\"|\'|(\\s+)|\\n|$)",
+        '.*(?<depName>conventional-changelog-conventionalcommits)@(?<currentValue>.+?)("|\'|(\\s+)|\\n|$)',
       ],
-      datasourceTemplate: "npm",
-      depNameTemplate: "conventional-changelog-conventionalcommits",
+      datasourceTemplate: 'npm',
+      depNameTemplate: 'conventional-changelog-conventionalcommits',
     },
     {
-      description: "Update packer dependencies.",
-      customType: "regex",
-      fileMatch: [
-        '\\.pkr\\.hcl',
+      description: 'Update packer dependencies.',
+      customType: 'regex',
+      managerFilePatterns: [
+        '/\\.pkr\\.hcl/',
       ],
       matchStrings: [
         'required_version[\\s]+=[\\s]+"=?(?<currentValue>\\S*)"',
@@ -69,6 +74,6 @@
       ],
       datasourceTemplate: 'github-tags',
       depNameTemplate: '{{#if depName}}{{#if (containsString depName "hetznercloud/")}}{{{replace "hetznercloud/" "hetznercloud/packer-plugin-" depName}}}{{else}}{{{depName}}}{{/if}}{{else}}hashicorp/packer{{/if}}',
-    }
-  ]
+    },
+  ],
 }
