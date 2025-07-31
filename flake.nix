@@ -39,6 +39,12 @@
               nixpkgs-fmt
               tflint
               terraform-docs
+              checkov
+              snyk
+              tfsec
+              terrascan
+              trivy
+              pre-commit
             ];
 
             commands = [

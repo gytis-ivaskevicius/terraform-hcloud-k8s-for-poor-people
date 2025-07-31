@@ -1,7 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: whoami-app
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: whoami
+  namespace: whoami-app
 spec:
   replicas: 1
   selector:
@@ -14,15 +21,34 @@ spec:
     spec:
       containers:
         - name: whoami
-          image: traefik/whoami
+          image: traefik/whoami:v1.11.0
           ports:
             - containerPort: 80
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 5
+          imagePullPolicy: Always
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: whoami
+  namespace: whoami-app
   labels:
     app: whoami
 spec:
@@ -37,6 +63,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: whoami
+  namespace: whoami-app
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls.certresolver: le
@@ -57,4 +84,3 @@ spec:
                 name: whoami
                 port:
                   number: 80
-

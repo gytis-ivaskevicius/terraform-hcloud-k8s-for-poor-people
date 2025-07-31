@@ -167,8 +167,8 @@ variable "registries" {
       config = {
         "docker.io" = {
           auth = {
-            username = "myuser"
-            password = "mypassword"
+            username = ""
+            password = ""
           }
         }
       }
