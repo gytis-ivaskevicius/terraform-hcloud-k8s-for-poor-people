@@ -40,6 +40,7 @@ jobs:
           output_format: cli,sarif
           output_file_path: console,results.sarif
           download_external_modules: true
+          skip_path: demo.yaml
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@4e828ff8d448a8a6e532957b1811f387a63867e8 # v3.29.4
