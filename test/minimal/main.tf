@@ -51,7 +51,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = module.talos.kubeconfig_data.host
     client_certificate     = module.talos.kubeconfig_data.client_certificate
     client_key             = module.talos.kubeconfig_data.client_key
@@ -84,7 +84,7 @@ module "talos" {
   # Single control plane — cheapest config
   control_planes = {
     control-plane = {
-      server_type  = "cx22"
+      server_type  = "cx23"
       count        = 1
     }
   }
@@ -125,4 +125,8 @@ module "talos" {
 
   # Dummy SSH key prevents Hetzner credential emails
   ssh_public_key = null
+
+  # Only x86 needed for CX22 server
+  disable_arm = true
+  disable_x86 = false
 }
