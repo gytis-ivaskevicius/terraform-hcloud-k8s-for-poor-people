@@ -2,7 +2,7 @@
 packer {
   required_plugins {
     hcloud = {
-      version = "v1.6.0"
+      version = ">= v1.6.0"
       source  = "github.com/hetznercloud/hcloud"
     }
   }
@@ -10,7 +10,7 @@ packer {
 
 variable "talos_version" {
   type    = string
-  default = "v1.9.5"
+  default = "v1.13.2"
 }
 
 variable "image_url_arm" {
