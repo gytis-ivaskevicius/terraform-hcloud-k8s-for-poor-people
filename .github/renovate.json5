@@ -7,4 +7,43 @@
   assignees: [
     'gytis-ivaskevicius',
   ],
+
+  packageRules: [
+    // Group all GitHub Action updates into a single PR
+    {
+      matchManagers: ["github-actions"],
+      groupName: "GitHub Actions",
+      groupSlug: "gh-actions",
+    },
+    // Group all Helm chart version bumps into a single PR
+    {
+      matchManagers: ["helm-values"],
+      groupName: "Helm Charts",
+      groupSlug: "helm-charts",
+    },
+    // Group all Terraform provider updates into a single PR
+    {
+      matchManagers: ["terraform"],
+      groupName: "Terraform Providers",
+      groupSlug: "tf-providers",
+    },
+    // Group pre-commit hook updates
+    {
+      matchManagers: ["pre-commit"],
+      groupName: "Pre-commit Hooks",
+      groupSlug: "pre-commit",
+    },
+    // Group all NPM deps (commitlint) into a single PR
+    {
+      matchManagers: ["npm"],
+      groupName: "NPM Dependencies",
+      groupSlug: "npm-deps",
+    },
+  ],
+
+  // NOTE: For future-proofing, if Renovate starts detecting talos_version
+  // and kubernetes_version as updatable deps, add them to a 'K8s Stack' group
+  // here. Currently they're plain string variable defaults that Renovate's
+  // terraform manager doesn't track, so they need manual coordination.
+  // Compatibility: Talos v1.13 <-> K8s 1.36 <-> Cilium 1.19
 }

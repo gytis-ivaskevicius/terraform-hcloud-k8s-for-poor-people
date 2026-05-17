@@ -113,9 +113,9 @@ variable "kube_api_extra_args" {
 
 variable "kubernetes_version" {
   type        = string
-  default     = "1.30.3"
+  default     = "1.36.0"
   description = <<EOF
-    The Kubernetes version to use. If not set, the latest version supported by Talos is used: https://www.talos.dev/v1.7/introduction/support-matrix/
+    The Kubernetes version to use. If not set, the latest version supported by Talos is used: https://www.talos.dev/v1.13/introduction/support-matrix/
     Needs to be compatible with the `cilium_version`: https://docs.cilium.io/en/stable/network/kubernetes/compatibility/
   EOF
 }

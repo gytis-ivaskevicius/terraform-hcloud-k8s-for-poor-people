@@ -129,7 +129,7 @@ data "talos_machine_configuration" "worker" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.worker_yaml), yamlencode(each.value.extra_user_data)]
+  config_patches     = each.value.extra_user_data != null ? [yamlencode(local.worker_yaml), yamlencode(each.value.extra_user_data)] : [yamlencode(local.worker_yaml)]
   docs               = false
   examples           = false
 }

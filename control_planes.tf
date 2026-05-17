@@ -174,7 +174,7 @@ locals {
       externalCloudProvider = {
         enabled = true
         manifests = [
-          "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/v1.6.0/docs/deploy/cloud-controller-manager-daemonset.yml"
+          "https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/v1.12.0/docs/deploy/cloud-controller-manager-daemonset.yml"
         ]
       }
     }
@@ -223,7 +223,7 @@ data "talos_machine_configuration" "control_plane" {
   kubernetes_version = var.kubernetes_version
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
-  config_patches     = [yamlencode(local.controlplane_yaml), yamlencode(each.value.extra_user_data)]
+  config_patches     = each.value.extra_user_data != null ? [yamlencode(local.controlplane_yaml), yamlencode(each.value.extra_user_data)] : [yamlencode(local.controlplane_yaml)]
   docs               = false
   examples           = false
 }

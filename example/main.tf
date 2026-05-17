@@ -1,13 +1,13 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.9.0"
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
+      version = "~> 3.1.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.0"
+      version = "~> 3.1.0"
     }
   }
 }
@@ -32,7 +32,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = module.talos.kubeconfig_data.host
     client_certificate     = module.talos.kubeconfig_data.client_certificate
     client_key             = module.talos.kubeconfig_data.client_key
@@ -59,7 +59,7 @@ module "talos" {
   cluster_name = "poor-people-cluster"
 
   # The version of talos features to use in generated machine configurations
-  talos_version = "v1.9.5"
+  talos_version = "v1.13.2"
 
   # $ hcloud datacenter list
   datacenter = "fsn1-dc14"
@@ -72,7 +72,7 @@ module "talos" {
   allow_scheduling_on_control_planes = true
 
   # Autoscaler configuration. If used, I strongly recommend pinning autoscaler to a specific version
-  autoscaler_version = "9.46.6"
+  autoscaler_version = "9.57.0"
 
   # Autoscaler configuration. K8s autoscaler will be installed if this map has at least one entry
   autoscaler_nodepools = {
@@ -98,7 +98,7 @@ module "talos" {
   # Cilium configuration. I strongly recommend pinning cilium to a specific version
   cilium = {
     enabled                 = true
-    version                 = "1.17.3"
+    version                 = "1.19.4"
     values                  = {}
     enable_encryption       = false
     enable_service_monitors = false
@@ -202,7 +202,7 @@ module "talos" {
   hcloud_ccm = {
     enabled   = true
     namespace = "kube-system"
-    version   = "1.24.0"
+    version   = "1.31.0"
     values    = {}
   }
 
@@ -210,7 +210,7 @@ module "talos" {
   hcloud_csi = {
     enabled   = true
     namespace = "kube-system"
-    version   = "2.13.0"
+    version   = "2.21.0"
     values    = null
   }
 
@@ -236,7 +236,7 @@ module "talos" {
   }
 
   # Kubernetes version (must be compatible with Cilium)
-  kubernetes_version = "1.30.3"
+  kubernetes_version = "1.36.0"
 
   # Main IPv4 CIDR for all subnets
   network_ipv4_cidr = "10.0.0.0/16"
