@@ -140,33 +140,26 @@ jobs:
         with:
           fetch-depth: 0
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
-      - name: Setup Node and Yarn Cache
-        uses: ./.github/actions/setup-node-and-yarn-cache
-        with:
-          cache-dependency-path: .github/commitlint/yarn.lock
-      - name: Yarn install
-        run: yarn install --immutable --immutable-cache
-        working-directory: ./.github/commitlint
+      - name: Setup Nix
+        uses: nixbuild/nix-quick-install-action@v30
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
-        run: yarn commitlint --last --verbose
-        working-directory: ./.github/commitlint
+        run: nix develop -c bunx commitlint --last --verbose
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request_target'
         id: validate
         run: |
-          yarn commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose > commitlint_output.txt
-        working-directory: ./.github/commitlint
+          nix develop -c bunx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose > commitlint_output.txt
       - name: Print commitlint output
         if: ${{ always() }}
         run: |
-          echo $(cat ./.github/commitlint/commitlint_output.txt)
+          echo $(cat commitlint_output.txt)
       - name: Set commitlint output to env
         if: ${{ always() }}
         run: |
           {
             echo 'commitlint_output<<EOF'
-            cat ./.github/commitlint/commitlint_output.txt
+            cat commitlint_output.txt
             echo EOF
           } >> "$GITHUB_ENV"
       - name: Find Comment

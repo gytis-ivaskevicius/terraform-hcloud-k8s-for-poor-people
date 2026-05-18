@@ -45,6 +45,7 @@
               terrascan
               trivy
               pre-commit
+              bun
             ];
 
             commands = [
