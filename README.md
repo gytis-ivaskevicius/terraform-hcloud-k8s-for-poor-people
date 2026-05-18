@@ -89,24 +89,24 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.8.0 |
-| <a name="requirement_hcloud"></a> [hcloud](#requirement\_hcloud) | >= 1.50.1 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.17.0 |
-| <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.4.5 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 2.1.3 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.23.0 |
-| <a name="requirement_talos"></a> [talos](#requirement\_talos) | >= 0.7.1 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.0.6 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.9.0 |
+| <a name="requirement_hcloud"></a> [hcloud](#requirement\_hcloud) | >= 1.63.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 3.1.1 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | >= 3.6.0 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 2.2.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 3.1.0 |
+| <a name="requirement_talos"></a> [talos](#requirement\_talos) | >= 0.11.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_hcloud"></a> [hcloud](#provider\_hcloud) | >= 1.50.1 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.17.0 |
-| <a name="provider_http"></a> [http](#provider\_http) | >= 3.4.5 |
-| <a name="provider_talos"></a> [talos](#provider\_talos) | >= 0.7.1 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 4.0.6 |
+| <a name="provider_hcloud"></a> [hcloud](#provider\_hcloud) | >= 1.63.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 3.1.1 |
+| <a name="provider_http"></a> [http](#provider\_http) | >= 3.6.0 |
+| <a name="provider_talos"></a> [talos](#provider\_talos) | >= 0.11.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 4.3.0 |
 
 ## Modules
 
@@ -183,12 +183,12 @@ No modules.
 | <a name="input_kernel_modules_to_load"></a> [kernel\_modules\_to\_load](#input\_kernel\_modules\_to\_load) | List of kernel modules to load. | <pre>list(object({<br/>    name       = string<br/>    parameters = optional(list(string))<br/>  }))</pre> | `null` | no |
 | <a name="input_kube_api_extra_args"></a> [kube\_api\_extra\_args](#input\_kube\_api\_extra\_args) | Additional arguments to pass to the kube-apiserver. | `map(string)` | `{}` | no |
 | <a name="input_kubelet_extra_args"></a> [kubelet\_extra\_args](#input\_kubelet\_extra\_args) | Additional arguments to pass to kubelet. | `map(string)` | `{}` | no |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | The Kubernetes version to use. If not set, the latest version supported by Talos is used: https://www.talos.dev/v1.7/introduction/support-matrix/<br/>    Needs to be compatible with the `cilium_version`: https://docs.cilium.io/en/stable/network/kubernetes/compatibility/ | `string` | `"1.30.3"` | no |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | The Kubernetes version to use. If not set, the latest version supported by Talos is used: https://www.talos.dev/v1.13/introduction/support-matrix/<br/>    Needs to be compatible with the `cilium_version`: https://docs.cilium.io/en/stable/network/kubernetes/compatibility/ | `string` | `"1.36.0"` | no |
 | <a name="input_network_ipv4_cidr"></a> [network\_ipv4\_cidr](#input\_network\_ipv4\_cidr) | The main network cidr that all subnets will be created upon. | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_node_ipv4_cidr"></a> [node\_ipv4\_cidr](#input\_node\_ipv4\_cidr) | Node CIDR, used for the nodes (control plane and worker nodes) in the cluster. | `string` | `"10.0.1.0/24"` | no |
 | <a name="input_output_mode_config_cluster_endpoint"></a> [output\_mode\_config\_cluster\_endpoint](#input\_output\_mode\_config\_cluster\_endpoint) | Configure which endpoint address is written into the generated `talosconfig` and `kubeconfig` files.<br/>    - `public_ip`: Use the public IP of the first control plane (or the Floating IP if enabled).<br/>    - `private_ip`: Use the private IP of the first control plane (or the private Alias IP if enabled). Useful if accessing only via VPN/private network.<br/>    - `cluster_endpoint`: Use the hostname defined in `cluster_api_host`. Requires `cluster_api_host` to be set. | `string` | `"public_ip"` | no |
 | <a name="input_pod_ipv4_cidr"></a> [pod\_ipv4\_cidr](#input\_pod\_ipv4\_cidr) | Pod CIDR, used for the pods in the cluster. | `string` | `"10.0.16.0/20"` | no |
-| <a name="input_registries"></a> [registries](#input\_registries) | List of registry mirrors to use.<br/>    Example:<pre>registries = {<br/>      mirrors = {<br/>        "docker.io" = {<br/>          endpoints = [<br/>            "http://localhost:5000",<br/>            "https://docker.io"<br/>          ]<br/>        }<br/>      }<br/>    }</pre>https://www.talos.dev/v1.6/reference/configuration/v1alpha1/config/#Config.machine.registries | <pre>object({<br/>    mirrors = optional(map(object({<br/>      endpoints    = list(string)<br/>      overridePath = optional(bool)<br/>    })))<br/>    config = optional(map(object({<br/>      auth = object({<br/>        username      = optional(string)<br/>        password      = optional(string)<br/>        auth          = optional(string)<br/>        identityToken = optional(string)<br/>      })<br/>    })))<br/>  })</pre> | `null` | no |
+| <a name="input_registries"></a> [registries](#input\_registries) | List of registry mirrors to use.<br/>    Example:<pre>hcl<br/>    registries = {<br/>      mirrors = {<br/>        "docker.io" = {<br/>          endpoints = [<br/>            "http://localhost:5000",<br/>            "https://docker.io"<br/>          ]<br/>        }<br/>      }<br/>      config = {<br/>        "docker.io" = {<br/>          auth = {<br/>            username = ""<br/>            password = ""<br/>          }<br/>        }<br/>      }<br/>    }</pre>See: https://www.talos.dev/v1.6/reference/configuration/v1alpha1/config/#Config.machine.registries | <pre>object({<br/>    mirrors = optional(map(object({<br/>      endpoints    = list(string)<br/>      overridePath = optional(bool)<br/>    })))<br/>    config = optional(map(object({<br/>      auth = object({<br/>        username      = optional(string)<br/>        password      = optional(string)<br/>        auth          = optional(string)<br/>        identityToken = optional(string)<br/>      })<br/>    })))<br/>  })</pre> | `null` | no |
 | <a name="input_service_ipv4_cidr"></a> [service\_ipv4\_cidr](#input\_service\_ipv4\_cidr) | Service CIDR, used for the services in the cluster. | `string` | `"10.0.8.0/21"` | no |
 | <a name="input_ssh_public_key"></a> [ssh\_public\_key](#input\_ssh\_public\_key) | The public key to be set in the servers. It is not used in any way.<br/>    If you don't set it, a dummy key will be generated and used.<br/>    Unfortunately, it is still required, otherwise the Hetzner will sen E-Mails with login credentials. | `string` | `null` | no |
 | <a name="input_sysctls_extra_args"></a> [sysctls\_extra\_args](#input\_sysctls\_extra\_args) | Additional sysctls to set. | `map(string)` | `{}` | no |
