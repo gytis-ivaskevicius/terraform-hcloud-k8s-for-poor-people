@@ -126,7 +126,7 @@ module "talos" {
   # Dummy SSH key prevents Hetzner credential emails
   ssh_public_key = null
 
-  # Only x86 needed for CX22 server
+  # Only x86 needed for CX23 server
   disable_arm = true
   disable_x86 = false
 }

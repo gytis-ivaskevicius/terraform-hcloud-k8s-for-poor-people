@@ -39,7 +39,7 @@ tofu destroy -auto-approve
 
 | Resource | Type | Cost |
 |---|---|---|
-| CX22 server | Control plane | ~€6/mo |
+|| CX23 server | Control plane | ~€6/mo |
 | Primary IPv4 | IP address | Free |
 | Network / Subnet | Private network | Free |
 | Firewall | Security rules | Free |
