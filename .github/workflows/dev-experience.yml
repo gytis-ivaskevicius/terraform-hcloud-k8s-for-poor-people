@@ -32,7 +32,7 @@ jobs:
           - version: ~1.10.0
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500cb3c7416ddb342e18e4ea474100b # v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
       - name: Configure Terraform plugin cache
@@ -40,13 +40,13 @@ jobs:
           echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > ~/.terraformrc
           mkdir -p ~/.terraform.d/plugin-cache
       - name: Cache Terraform
-        uses: actions/cache@27d5ce7f107f551aa50676c82870fda007bfc35f # v5.0.5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.terraform.d/plugin-cache
           key: "${{ runner.os }}-terraform-${{ hashFiles(format('{0}/.terraform.lock.hcl', matrix.version)) }}"
           restore-keys: "${{ runner.os }}-terraform-"
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@dfe3c3f878155cda295289a6c231b26a7dbd6e5d # v4.0.1
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_version: ${{ matrix.version }}
@@ -68,7 +68,7 @@ jobs:
         run: terraform validate -no-color
         continue-on-error: true
       - name: Find Comment
-        uses: peter-evans/find-comment@b30e6a3c0ed37fe3f52b07c9a833b8a05a869127 # v4.0.0
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -76,7 +76,7 @@ jobs:
           body-includes: |
             Terraform-Check (version: ${{ steps.terraform-version.outputs.TERRAFORM_VERSION }})
       - name: Create or update comment
-        uses: peter-evans/create-or-update-comment@e8674b075228d382e8db6475355e28eeb193a3fb # v5.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -136,42 +136,35 @@ jobs:
       pull-requests: write # for create or update comment
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500cb3c7416ddb342e18e4ea474100b # v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
-      - name: Setup Node and Yarn Cache
-        uses: ./.github/actions/setup-node-and-yarn-cache
-        with:
-          cache-dependency-path: .github/commitlint/yarn.lock
-      - name: Yarn install
-        run: yarn install --immutable --immutable-cache
-        working-directory: ./.github/commitlint
+      - name: Setup Nix
+        uses: nixbuild/nix-quick-install-action@v30
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
-        run: yarn commitlint --last --verbose
-        working-directory: ./.github/commitlint
+        run: nix develop -c bunx commitlint --last --verbose
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request_target'
         id: validate
         run: |
-          yarn commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose > commitlint_output.txt
-        working-directory: ./.github/commitlint
+          nix develop -c bunx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose > commitlint_output.txt
       - name: Print commitlint output
         if: ${{ always() }}
         run: |
-          echo $(cat ./.github/commitlint/commitlint_output.txt)
+          echo $(cat commitlint_output.txt)
       - name: Set commitlint output to env
         if: ${{ always() }}
         run: |
           {
             echo 'commitlint_output<<EOF'
-            cat ./.github/commitlint/commitlint_output.txt
+            cat commitlint_output.txt
             echo EOF
           } >> "$GITHUB_ENV"
       - name: Find Comment
         if: ${{ always() }}
-        uses: peter-evans/find-comment@b30e6a3c0ed37fe3f52b07c9a833b8a05a869127 # v4.0.0
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -180,7 +173,7 @@ jobs:
             Commitlint-Check
       - name: Create or update commitlint comment on failure
         if: ${{ failure() }}
-        uses: peter-evans/create-or-update-comment@e8674b075228d382e8db6475355e28eeb193a3fb # v5.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
@@ -199,7 +192,7 @@ jobs:
           reactions: eyes
       - name: Create or update commitlint comment on success
         if: ${{ success() }}
-        uses: peter-evans/create-or-update-comment@e8674b075228d382e8db6475355e28eeb193a3fb # v5.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
