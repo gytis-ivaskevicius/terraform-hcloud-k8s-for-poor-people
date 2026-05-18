@@ -8,7 +8,7 @@ on:
       - reopened
       - edited
     branches:
-      - main
+      - master
 
 permissions: read-all
 
