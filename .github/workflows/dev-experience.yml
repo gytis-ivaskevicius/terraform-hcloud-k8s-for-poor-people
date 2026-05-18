@@ -141,7 +141,7 @@ jobs:
           fetch-depth: 0
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
       - name: Setup Nix
-        uses: nixbuild/nix-quick-install-action@v30
+        uses: nixbuild/nix-quick-install-action@5bb6a3b3abe66fd09bbf250dce8ada94f856a703 # v30
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
         run: nix develop -c bunx commitlint --last --verbose
