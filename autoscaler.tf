@@ -5,7 +5,7 @@ variable "autoscaler_nodepools" {
     server_type     = string
     min_nodes       = number
     max_nodes       = number
-    datacenter      = optional(string)
+    location        = optional(string)
     extra_user_data = optional(map(any))
     labels          = optional(map(string), {})
     taints = optional(list(object({
@@ -92,7 +92,7 @@ resource "helm_release" "autoscaler" {
         maxSize      = np.max_nodes
         minSize      = np.min_nodes
         instanceType = np.server_type
-        region       = coalesce(np.datacenter, var.datacenter)
+        region       = coalesce(np.location, var.location)
       }
     ]
   })]

@@ -78,7 +78,7 @@ module "talos" {
   hcloud_token      = var.hcloud_token
   cluster_name      = "test-k8s"
   talos_version     = "v1.13.2"
-  datacenter        = "fsn1-dc14"
+  location      = "fsn1"
   kubernetes_version = "1.36.0"
 
   # Single control plane — cheapest config

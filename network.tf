@@ -105,43 +105,39 @@ resource "hcloud_floating_ip_assignment" "this" {
 }
 
 resource "hcloud_primary_ip" "control_plane_ipv4" {
-  for_each      = { for k, v in local.control_planes : v.name => v if v.ipv4_enabled }
-  name          = "${each.value.name}-ipv4"
-  datacenter    = each.value.datacenter
-  type          = "ipv4"
-  assignee_type = "server"
-  auto_delete   = false
-  labels        = each.value.labels
+  for_each    = { for k, v in local.control_planes : v.name => v if v.ipv4_enabled }
+  name        = "${each.value.name}-ipv4"
+  location    = each.value.location
+  type        = "ipv4"
+  auto_delete = false
+  labels      = each.value.labels
 }
 
 resource "hcloud_primary_ip" "control_plane_ipv6" {
-  for_each      = { for k, v in local.control_planes : v.name => v if v.ipv6_enabled }
-  name          = "${each.value.name}-ipv6"
-  datacenter    = each.value.datacenter
-  type          = "ipv6"
-  assignee_type = "server"
-  auto_delete   = false
-  labels        = each.value.labels
+  for_each    = { for k, v in local.control_planes : v.name => v if v.ipv6_enabled }
+  name        = "${each.value.name}-ipv6"
+  location    = each.value.location
+  type        = "ipv6"
+  auto_delete = false
+  labels      = each.value.labels
 }
 
 resource "hcloud_primary_ip" "worker_ipv4" {
-  for_each      = { for k, v in local.workers : v.name => v if v.ipv4_enabled }
-  name          = "${each.value.name}-ipv4"
-  datacenter    = each.value.datacenter
-  type          = "ipv4"
-  assignee_type = "server"
-  auto_delete   = false
-  labels        = each.value.labels
+  for_each    = { for k, v in local.workers : v.name => v if v.ipv4_enabled }
+  name        = "${each.value.name}-ipv4"
+  location    = each.value.location
+  type        = "ipv4"
+  auto_delete = false
+  labels      = each.value.labels
 }
 
 resource "hcloud_primary_ip" "worker_ipv6" {
-  for_each      = { for k, v in local.workers : v.name => v if v.ipv6_enabled }
-  name          = "${each.value.name}-ipv6"
-  datacenter    = each.value.datacenter
-  type          = "ipv6"
-  assignee_type = "server"
-  auto_delete   = false
-  labels        = each.value.labels
+  for_each    = { for k, v in local.workers : v.name => v if v.ipv6_enabled }
+  name        = "${each.value.name}-ipv6"
+  location    = each.value.location
+  type        = "ipv6"
+  auto_delete = false
+  labels      = each.value.labels
 }
 
 locals {

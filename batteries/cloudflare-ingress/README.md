@@ -33,7 +33,7 @@
 |------|-------------|------|---------|:--------:|
 | <a name="input_cloudflare_api_token"></a> [cloudflare\_api\_token](#input\_cloudflare\_api\_token) | Cloudflare API token | `string` | n/a | yes |
 | <a name="input_external_dns"></a> [external\_dns](#input\_external\_dns) | ExternalDNS configuration | <pre>object({<br/>    version        = optional(string, null)<br/>    values         = optional(map(any))<br/>    namespace      = optional(string, "kube-system")<br/>    domain_filters = optional(list(string), [])<br/>    txt_owner_id   = optional(string, "external-dns")<br/>  })</pre> | `{}` | no |
-| <a name="input_traefik"></a> [traefik](#input\_traefik) | Traefik configuration | <pre>object({<br/>    version          = optional(string, null)<br/>    values           = optional(map(any))<br/>    namespace        = optional(string, "traefik")<br/>    enable_dashboard = optional(bool, false)<br/>    lb_datacenter    = string<br/>    acme_email       = string<br/>  })</pre> | n/a | yes |
+| <a name="input_traefik"></a> [traefik](#input\_traefik) | Traefik configuration | <pre>object({<br/>    version          = optional(string, null)<br/>    values           = optional(map(any))<br/>    namespace        = optional(string, "traefik")<br/>    enable_dashboard = optional(bool, false)<br/>    lb_location    = string<br/>    acme_email       = string<br/>  })</pre> | n/a | yes |
 
 ## Outputs
 

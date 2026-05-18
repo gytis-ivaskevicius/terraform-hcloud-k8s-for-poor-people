@@ -61,8 +61,8 @@ module "talos" {
   # The version of talos features to use in generated machine configurations
   talos_version = "v1.13.2"
 
-  # $ hcloud datacenter list
-  datacenter = "fsn1-dc14"
+  # $ hcloud location list
+  location = "fsn1"
 
   ####################################################
   # Optional values:                                 #
@@ -78,7 +78,7 @@ module "talos" {
   autoscaler_nodepools = {
     autoscaler = {
       server_type     = "cpx11"
-      datacenter      = "fsn1"
+      location        = "fsn1"
       min_nodes       = 0
       max_nodes       = 1
       extra_user_data = null
@@ -121,7 +121,7 @@ module "talos" {
   control_planes = {
     control-plane = {
       server_type     = "cx32"
-      datacenter      = "fsn1-dc14"
+      location        = "fsn1"
       count           = 1
       extra_user_data = null
       labels = {
@@ -285,7 +285,7 @@ module "talos" {
   workers = {
     #worker-a = {
     #  server_type  = "cx31"
-    #  datacenter   = "fsn1-dc14"
+    #  location     = "fsn1"
     #  labels       = { role = "app" }
     #  count        = 2
     #  extra_user_data = null
@@ -302,7 +302,7 @@ module "ingress" {
   }
   traefik = {
     acme_email       = "me@gytis.io"
-    lb_datacenter    = "fsn1"
+    lb_location    = "fsn1"
     enable_dashboard = true
   }
 }

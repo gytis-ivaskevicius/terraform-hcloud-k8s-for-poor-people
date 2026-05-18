@@ -33,7 +33,7 @@ No modules.
 | <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | The Traefik version to use. | `string` | `null` | no |
 | <a name="input_cloudflare_api_token"></a> [cloudflare\_api\_token](#input\_cloudflare\_api\_token) | Cloudflare API token | `string` | n/a | yes |
 | <a name="input_enable_dashboard"></a> [enable\_dashboard](#input\_enable\_dashboard) | If true, the Traefik dashboard will be enabled. | `bool` | `true` | no |
-| <a name="input_lb_datacenter"></a> [lb\_datacenter](#input\_lb\_datacenter) | The datacenter of the load balancer | `string` | n/a | yes |
+| <a name="input_lb_location"></a> [lb\_location](#input\_lb\_location) | The location of the load balancer (e.g. fsn1) | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The namespace to deploy Traefik into. | `string` | `"traefik"` | no |
 | <a name="input_values"></a> [values](#input\_values) | Additional values to pass to the chart. | `map(any)` | `{}` | no |
 
