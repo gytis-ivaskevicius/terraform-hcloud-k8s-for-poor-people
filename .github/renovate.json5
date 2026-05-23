@@ -1,12 +1,16 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    "config:best-practices",
+    "config:recommended",
     ':automergePatch',
   ],
   assignees: [
     'gytis-ivaskevicius',
   ],
+
+  // Wait at least 3 days after a release before creating a PR
+  // Avoids noise from yanked or broken releases
+  minimumReleaseAge: "3 days",
 
   packageRules: [
     // Group all GitHub Action updates into a single PR
@@ -14,6 +18,18 @@
       matchManagers: ["github-actions"],
       groupName: "GitHub Actions",
       groupSlug: "gh-actions",
+    },
+    // Stable utilities: only ping on major version bumps
+    {
+      matchPackageNames: [
+        "peter-evans/find-comment",
+        "peter-evans/create-or-update-comment",
+        "hashicorp/setup-terraform",
+      ],
+      matchManagers: ["github-actions"],
+      major: { enabled: true },
+      minor: { enabled: false },
+      patch: { enabled: false },
     },
     // Group all Helm chart version bumps into a single PR
     {
