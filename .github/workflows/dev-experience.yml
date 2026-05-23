@@ -206,6 +206,38 @@ jobs:
             [commitlint](https://commitlint.js.org) has detected that all commit messages in this PR follow the [conventional commit format](https://www.conventionalcommits.org/en/v1.0.0/) :tada:
           reactions: hooray
 
+  tofu-plan-check:
+    name: OpenTofu Plan Check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+      - name: Setup Nix
+        uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
+      - name: OpenTofu Init (test/minimal)
+        id: init
+        run: |
+          cd test/minimal
+          nix develop -c tofu init -no-color
+        continue-on-error: true
+      - name: OpenTofu Plan (test/minimal)
+        id: plan
+        run: |
+          cd test/minimal
+          nix develop -c tofu plan -no-color -input=false
+        continue-on-error: true
+        env:
+          TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
+      - name: Fail on error
+        if: steps.init.outcome != 'success' || steps.plan.outcome != 'success'
+        run: |
+          echo "OpenTofu plan check failed"
+          exit 1
+
   dev_xperience_status_check:
     name: DevXperience status check
     if: ${{ always() && !cancelled() }}
@@ -213,6 +245,7 @@ jobs:
     needs:
       - terraform-check
       - commitlint
+      - tofu-plan-check
     steps:
       - name: Fail on error
         # see https://stackoverflow.com/a/67532120/4907315 and https://github.com/orgs/community/discussions/26822#discussioncomment-3305794
