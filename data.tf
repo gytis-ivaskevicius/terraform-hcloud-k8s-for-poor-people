@@ -3,12 +3,8 @@ locals {
   cluster_prefix = var.cluster_prefix ? "${var.cluster_name}-" : ""
 }
 
-data "hcloud_datacenter" "this" {
-  name = var.datacenter
-}
-
 data "hcloud_location" "this" {
-  id = data.hcloud_datacenter.this.location.id
+  name = var.location
 }
 
 data "hcloud_image" "arm" {

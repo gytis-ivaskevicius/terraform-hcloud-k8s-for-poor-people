@@ -34,16 +34,17 @@ variable "cluster_api_host" {
   default     = null
 }
 
-variable "datacenter" {
+variable "location" {
   type        = string
   description = <<EOF
-    The name of the datacenter where the cluster will be created.
-    This is used to determine the region and zone of the cluster and network.
-    Possible values: fsn1-dc14, nbg1-dc3, hel1-dc2, ash-dc1, hil-dc1
+    The name of the Hetzner Cloud location where the cluster will be created.
+    Possible values: fsn1, nbg1, hel1, ash, hil
+    Note: As of July 2026, Hetzner deprecated the `datacenter` attribute in
+    favour of `location`. Use `hcloud location list` to see available locations.
   EOF
   validation {
-    condition     = contains(["fsn1-dc14", "nbg1-dc3", "hel1-dc2", "ash-dc1", "hil-dc1"], var.datacenter)
-    error_message = "Invalid datacenter name."
+    condition     = contains(["fsn1", "nbg1", "hel1", "ash", "hil"], var.location)
+    error_message = "Invalid location name. Must be one of: fsn1, nbg1, hel1, ash, hil."
   }
 }
 

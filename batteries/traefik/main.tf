@@ -36,9 +36,9 @@ variable "cloudflare_api_token" {
   description = "Cloudflare API token"
 }
 
-variable "lb_datacenter" {
+variable "lb_location" {
   type        = string
-  description = "The datacenter of the load balancer"
+  description = "The location of the load balancer (e.g. fsn1)"
 }
 
 variable "acme_email" {
@@ -71,7 +71,7 @@ resource "helm_release" "traefik" {
 
       service = {
         annotations = {
-          "load-balancer.hetzner.cloud/location" = var.lb_datacenter
+          "load-balancer.hetzner.cloud/location" = var.lb_location
         }
       }
 

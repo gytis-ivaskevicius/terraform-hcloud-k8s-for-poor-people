@@ -14,5 +14,5 @@ output "kubeconfig_data" {
 }
 
 output "public_ip" {
-  value     = module.talos.public_ipv4_list
+  value = module.talos.public_ipv4_list
 }

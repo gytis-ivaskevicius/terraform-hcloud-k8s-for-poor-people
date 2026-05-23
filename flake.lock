@@ -2,7 +2,9 @@
   "nodes": {
     "devshell": {
       "inputs": {
-        "nixpkgs": []
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1741473158,
