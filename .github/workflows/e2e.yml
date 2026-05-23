@@ -1,0 +1,76 @@
+name: E2E Test
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+    branches:
+      - master
+
+permissions: read-all
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+
+env:
+  HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+
+jobs:
+  e2e:
+    name: End-to-End Test (Hetzner)
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'e2e-test')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request != null && format('refs/pull/{0}/merge', github.event.pull_request.number) || github.sha }}
+
+      - name: Setup Nix
+        uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
+
+      - name: Run E2E test
+        id: test
+        run: |
+          nix develop -c bash test/e2e.sh
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+        timeout-minutes: 35
+
+      - name: Find E2E comment
+        if: github.event_name == 'pull_request' && always()
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: |
+            E2E-Test
+
+      - name: Post E2E result comment
+        if: github.event_name == 'pull_request' && always()
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ### E2E-Test: ${{ steps.test.outcome == 'success' && '✅' || '❌' }}
+
+            | Phase | Status |
+            |-------|--------|
+            | Image Build | (handled by script) |
+            | Cluster Deploy | ${{ steps.test.outcome == 'success' && '✅' || '❌' }} |
+            | Verification | ${{ steps.test.outcome == 'success' && '✅' || '❌' }} |
+            | Cleanup | (always runs via trap) |
+
+            Triggered by: ${{ github.event_name }} ${{ github.event.pull_request.html_url || '' }}
+
+            > **Note**: Test resources were provisioned on Hetzner Cloud (~€0.002 per run).
