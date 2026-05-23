@@ -63,13 +63,13 @@ cleanup_resources() {
   fi
 
   # Destroy Terraform infrastructure
-  if [ -f terraform.tfvars ]; then
+  if [ -f terraform.tfstate ]; then
     info "Running tofu destroy..."
     tofu destroy -auto-approve -no-color 2>&1 | sed 's/^/    /'
-    rm -f terraform.tfvars kubeconfig talosconfig
+    rm -f kubeconfig talosconfig
     ok "Cluster destroyed"
   else
-    info "No cluster to destroy (no terraform.tfvars found)"
+    info "No cluster to destroy (no terraform.tfstate found)"
   fi
 }
 
@@ -84,7 +84,7 @@ if [ -z "${HCLOUD_TOKEN:-}" ]; then
   exit 1
 fi
 
-for cmd in tofu kubectl packer hcloud; do
+for cmd in tofu kubectl talosctl packer hcloud; do
   if ! command -v "$cmd" &>/dev/null; then
     fail "Required command not found: $cmd"
     echo "  Run via nix: nix develop -c bash test/e2e.sh"
@@ -96,7 +96,7 @@ ok "All prerequisites met"
 # ── Destroy only ────────────────────────────────────────────────────────────
 if [ "$DESTROY_ONLY" = true ]; then
   cd "$TEST_DIR"
-  if [ -f terraform.tfvars ]; then
+  if [ -f terraform.tfstate ]; then
     cleanup_resources
   else
     info "Nothing to destroy"
@@ -127,7 +127,8 @@ fi
 step "Phase 2: Deploy cluster"
 
 cd "$TEST_DIR"
-echo "hcloud_token = \"$HCLOUD_TOKEN\"" > terraform.tfvars
+# Pass token via env var (TF_VAR_hcloud_token) to avoid writing it to disk
+export TF_VAR_hcloud_token="$HCLOUD_TOKEN"
 trap cleanup_resources EXIT  # re-register after cd
 
 info "tofu init..."
@@ -242,25 +243,27 @@ if [ -z "$LB_IP" ]; then
   kubectl logs -n kube-system deployment/hcloud-cloud-controller-manager --tail=20 2>&1 | sed 's/^/    /'
   fail "LoadBalancer did not get an IP (known limitation: control-plane-only cluster)"
   info "  Add a worker node for LoadBalancer targets to be assigned"
+  exit 1
 else
   ok "LoadBalancer works"
 fi
 
 # 3e. Idempotency
 info "Verifying idempotency..."
-tofu plan -no-color -detailed-exitcode 2>&1 | sed 's/^/    /' && ok "Idempotent — no changes" || {
-  EXIT_CODE=$?
-  if [ $EXIT_CODE -eq 2 ]; then
-    fail "Plan shows changes — not idempotent!"
-    exit 1
-  fi
-}
+tofu plan -no-color -detailed-exitcode 2>&1 | sed 's/^/    /'
+PLAN_EXIT=${PIPESTATUS[0]}
+if [ "$PLAN_EXIT" -eq 2 ]; then
+  fail "Plan shows changes — not idempotent!"
+  exit 1
+elif [ "$PLAN_EXIT" -eq 0 ]; then
+  ok "Idempotent — no changes"
+else
+  fail "tofu plan failed (exit $PLAN_EXIT)"
+  exit 1
+fi
 
 # ── Done ────────────────────────────────────────────────────────────────────
 step "All E2E tests passed 🎉"
 echo ""
 echo "  Cluster was running at: https://$PUBLIC_IP:6443"
 echo "  Cleanup will happen automatically (trap on EXIT)"
-echo ""
-echo "  To keep the cluster running: ./test/e2e.sh --destroy-only"
-echo "  (then re-run with the same vars to resume)"

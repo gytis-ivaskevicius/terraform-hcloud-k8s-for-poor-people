@@ -208,6 +208,7 @@ jobs:
 
   tofu-plan-check:
     name: OpenTofu Plan Check
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -27,7 +27,7 @@ Triggers on:
 Provisions a real cluster on Hetzner Cloud, runs full verification (nodes, system pods,
 storage, LoadBalancer, idempotency), then destroys everything.
 
-Both workflows delegate to `test/e2e.sh`, which can also be run locally.
+The E2E workflow delegates to `test/e2e.sh`, which can also be run locally. The plan-check job runs `tofu init` and `tofu plan` directly without the script.
 
 ## Automated E2E Script (`test/e2e.sh`)
 
