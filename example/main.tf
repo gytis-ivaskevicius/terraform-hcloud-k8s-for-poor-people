@@ -302,7 +302,7 @@ module "ingress" {
   }
   traefik = {
     acme_email       = "me@gytis.io"
-    lb_location    = "fsn1"
+    lb_location      = "fsn1"
     enable_dashboard = true
   }
 }

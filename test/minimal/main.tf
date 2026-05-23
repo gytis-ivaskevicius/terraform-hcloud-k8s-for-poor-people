@@ -75,17 +75,17 @@ locals {
 module "talos" {
   source = "../../"
 
-  hcloud_token      = var.hcloud_token
-  cluster_name      = "test-k8s"
-  talos_version     = "v1.13.2"
-  location      = "fsn1"
+  hcloud_token       = var.hcloud_token
+  cluster_name       = "test-k8s"
+  talos_version      = "v1.13.2"
+  location           = "fsn1"
   kubernetes_version = "1.36.0"
 
   # Single control plane — cheapest config
   control_planes = {
     control-plane = {
-      server_type  = "cx23"
-      count        = 1
+      server_type = "cx23"
+      count       = 1
     }
   }
 
@@ -118,10 +118,10 @@ module "talos" {
   firewall_talos_api_source = local.allowed_ips
 
   # Disable features not needed for basic validation
-  enable_ipv6       = false
-  enable_kube_span  = false
+  enable_ipv6        = false
+  enable_kube_span   = false
   enable_floating_ip = false
-  enable_alias_ip   = true
+  enable_alias_ip    = true
 
   # Dummy SSH key prevents Hetzner credential emails
   ssh_public_key = null

@@ -24,7 +24,7 @@ variable "traefik" {
     values           = optional(map(any))
     namespace        = optional(string, "traefik")
     enable_dashboard = optional(bool, false)
-    lb_location    = string
+    lb_location      = string
     acme_email       = string
   })
 }
@@ -81,7 +81,7 @@ module "traefik" {
   namespace            = var.traefik.namespace
   enable_dashboard     = var.traefik.enable_dashboard
   values               = var.traefik.values
-  lb_location        = var.traefik.lb_location
+  lb_location          = var.traefik.lb_location
   acme_email           = var.traefik.acme_email
 }
 
